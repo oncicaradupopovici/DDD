@@ -13,7 +13,6 @@ namespace Banking.Domain.Services
     public class AccountService : IAccountService
     {
         private volatile static Dictionary<Guid, SemaphoreSlim> _accountSemaphores = new Dictionary<Guid, SemaphoreSlim>();
-        private volatile static object _accountSemaphoresLock = new object();
 
         private IAccountRepository _accountRepository;
         
@@ -78,7 +77,7 @@ namespace Banking.Domain.Services
         {
             if (!_accountSemaphores.ContainsKey(accountId))
             {
-                lock (_accountSemaphoresLock)
+                lock (_accountSemaphores)
                 {
                     if(!_accountSemaphores.ContainsKey(accountId))
                         _accountSemaphores[accountId] = new SemaphoreSlim(1);
